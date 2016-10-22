@@ -1,0 +1,25 @@
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\NetMQSubcriber.exe.config
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\NetMQSubcriber.exe
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\NetMQSubcriber.pdb
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\AsyncIO.dll
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\NetMQ.dll
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\bin\Debug\NetMQ.xml
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\obj\Debug\NetMQSubcriber.Properties.Resources.resources
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\obj\Debug\netMQScanner.csproj.GenerateResource.Cache
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\obj\Debug\NetMQSubcriber.exe
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\obj\Debug\NetMQSubcriber.pdb
+C:\Users\sony\Documents\Visual Studio 2015\Projects\NetMQSubcriber\NetMQSubcriber\obj\Debug\netMQScanner.csprojResolveAssemblyReference.cache
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\NetMQSubcriber.exe.config
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\obj\Debug\NetMQSubcriber.exe
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\obj\Debug\NetMQSubcriber.pdb
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\NetMQSubcriber.exe
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\NetMQSubcriber.pdb
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\AsyncIO.dll
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\NetMQ.dll
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\bin\Debug\NetMQ.xml
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\obj\Debug\netMQScanner.csprojResolveAssemblyReference.cache
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\obj\Debug\NetMQSubcriber.Properties.Resources.resources
+D:\WorkSpace\githubPro\zmqHub\Scanner\NetMQSubcriber\obj\Debug\netMQScanner.csproj.GenerateResource.Cache
+D:\ZMQHUBSQL\Scanner\NetMQSubcriber\bin\Debug\NetMQSubcriber.exe.config
+D:\ZMQHUBSQL\Scanner\NetMQSubcriber\obj\Debug\NetMQSubcriber.exe
+D:\ZMQHUBSQL\Scanner\NetMQSubcriber\obj\Debug\NetMQSubcriber.pdb

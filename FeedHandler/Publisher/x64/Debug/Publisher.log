@@ -1,0 +1,9 @@
+﻿  stdafx.cpp
+  sqlServerClient.cpp
+d:\zmqhubsql\feedhandler\publisher\sqlserverclient.cpp(58): warning C4129: 'S': unrecognized character escape sequence
+  Publisher.cpp
+  JSONValue.cpp
+  JSON.cpp
+  Generating Code...
+  Publisher.vcxproj -> D:\ZMQHUBSQL\FeedHandler\x64\Debug\Publisher.exe
+  Publisher.vcxproj -> D:\ZMQHUBSQL\FeedHandler\x64\Debug\Publisher.pdb (Full PDB)

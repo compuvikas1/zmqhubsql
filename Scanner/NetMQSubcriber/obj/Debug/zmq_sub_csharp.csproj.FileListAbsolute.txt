@@ -1,0 +1,11 @@
+c:\users\sony\documents\visual studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\zmq_sub_csharp.exe.config
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\obj\Debug\zmq_sub_csharp.csprojResolveAssemblyReference.cache
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\obj\Debug\zmq_sub_csharp.Properties.Resources.resources
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\obj\Debug\zmq_sub_csharp.csproj.GenerateResource.Cache
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\zmq_sub_csharp.exe
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\zmq_sub_csharp.pdb
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\AsyncIO.dll
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\NetMQ.dll
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\bin\Debug\NetMQ.xml
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\obj\Debug\zmq_sub_csharp.exe
+C:\Users\sony\Documents\Visual Studio 2015\Projects\zmq_sub_csharp\zmq_sub_csharp\obj\Debug\zmq_sub_csharp.pdb

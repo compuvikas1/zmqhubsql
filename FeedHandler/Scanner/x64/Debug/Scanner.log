@@ -1,0 +1,3 @@
+﻿  stdafx.cpp
+  Scanner.cpp
+d:\zmqhubsql\feedhandler\scanner\scanner.cpp(22): fatal error C1083: Cannot open include file: 'logger.h': No such file or directory
