@@ -237,7 +237,7 @@ void readConfig(std::string configFile) {
 			if (token.substr(0, 10) == "FEEDSOURCE") {
 				p1 = token.find("=", 0); p1++;
 				feedSource = token.substr(p1, token.length());
-			}			
+			}
 		}
 		prev = pos + delim.length();
 	} while (pos < confdata.length() && prev < confdata.length());
@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
 	signal(SIGINT, my_handler);
 	char errorStr[1000] = { '\0' };
 	int localcnt = 1001;
-	std::string lfilePath = "D:\\Rahul\\zmqhub\\FeedHandler\\resources\\";
+	std::string lfilePath = "D:\\zmqhub\\FeedHandler\\resources\\";
 	std::string lfiles;
 	std::string configFile;
 	if (argc > 3) {

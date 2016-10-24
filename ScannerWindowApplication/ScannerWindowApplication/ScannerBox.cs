@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Globalization;
 
 namespace ScannerWindowApplication
 {
@@ -49,7 +50,10 @@ namespace ScannerWindowApplication
                 double closePrice = Convert.ToDouble(feed.closePrice);
                 double ltp = Convert.ToDouble(feed.ltp);
                 int quantity = Convert.ToInt32(feed.quantity);
-                
+
+                bool flagSymbolCondition = true;
+                bool flagExpiryCondition = true;
+                bool flagStrikeCondition = true;
 
                 bool flagClosePriceCondition = true;
                 bool flagLtpCondition = true;
@@ -58,6 +62,28 @@ namespace ScannerWindowApplication
                 SymbolFilter symbolfilter;
                 if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out symbolfilter))
                 {                
+                    if(symbolfilter.symbol != null && feed.symbol != symbolfilter.symbol)
+                    {
+                        flagSymbolCondition = false;
+                    }
+                    if (symbolfilter.expiry != null && symbolfilter.expiry != "")
+                    {
+                       // MessageBox.Show(feed.expiry + " not equal " + symbolfilter.expiry);
+
+                        //DateTime dt1 = DateTime.ParseExact(symbolfilter.expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                        
+                        if (feed.expiry != symbolfilter.expiry)
+                        {                            
+                            flagExpiryCondition = false;
+                        }
+                        else
+                            flagExpiryCondition = true;
+                    }
+                    if (symbolfilter.strike != null && symbolfilter.strike != "" && feed.strike != symbolfilter.strike)
+                    {
+                        flagStrikeCondition = false;
+                    }
+
                     if (symbolfilter.closePrice != 0 && closePrice < symbolfilter.closePrice)
                     {
                         flagClosePriceCondition = false;
@@ -75,20 +101,18 @@ namespace ScannerWindowApplication
                 foreach (DataGridViewRow dgvRow in dataGridView1.Rows)
                 {
                     if (dgvRow.Cells[1].FormattedValue.ToString() == feed.symbol &&
-                        dgvRow.Cells[2].Value.ToString() == feed.expiry &&
-                        dgvRow.Cells[3].Value.ToString() == round(feed.strike, 2).ToString() &&
-                        dgvRow.Cells[4].Value.ToString().Substring(0,1) == feed.callput.Trim().Substring(0,1))
+                        dgvRow.Cells[2].Value.ToString() == feed.expiry.Substring(0,10) &&
+                        dgvRow.Cells[3].Value.ToString() == feed.strike &&
+                        dgvRow.Cells[4].Value.ToString() == feed.callput)
                     {
-                        if (flagClosePriceCondition && flagLtpCondition 
-                            && flagQuantityCondition)
+                        if (flagSymbolCondition && flagExpiryCondition &&
+                            flagStrikeCondition && flagClosePriceCondition && 
+                            flagLtpCondition && flagQuantityCondition)
                         {
                             dgvRow.Cells[0].Value = feed.feedtime.Substring(11, 8);
-                            dgvRow.Cells[2].Value = feed.expiry;
-                            string callput = "PUT";
-                            if (feed.callput.Trim().Substring(0, 1) == "C")
-                                callput = "CALL";
-                            dgvRow.Cells[3].Value = round(feed.strike, 2);
-                            dgvRow.Cells[4].Value = callput;
+                            dgvRow.Cells[2].Value = feed.expiry.Substring(0,10);
+                            dgvRow.Cells[3].Value = feed.strike;
+                            dgvRow.Cells[4].Value = feed.callput;
                             dgvRow.Cells[5].Value = round(feed.exch, 2);
                             dgvRow.Cells[6].Value = round(feed.closePrice, 2);
                             dgvRow.Cells[7].Value = round(feed.ltp, 2);
@@ -102,15 +126,12 @@ namespace ScannerWindowApplication
                 }
                 if (foundRow == false)
                 {
-                    if (flagClosePriceCondition && flagLtpCondition
-                        && flagQuantityCondition)
-                    {
-                        string callput = "PUT";
-                        if (feed.callput.Trim().Substring(0, 1) == "C")
-                            callput = "CALL";
-
-                        dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 8), feed.symbol, feed.expiry,
-                            round(feed.strike, 2), callput, feed.exch, 
+                    if (flagSymbolCondition && flagExpiryCondition &&
+                            flagStrikeCondition && flagClosePriceCondition &&
+                            flagLtpCondition && flagQuantityCondition)
+                    {                        
+                        dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 8), feed.symbol, feed.expiry.Substring(0,10),
+                            feed.strike, feed.callput, feed.exch, 
                              round(feed.closePrice, 2), round(feed.ltp, 2), feed.quantity);
                     }
                 }

@@ -8,60 +8,91 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Globalization;
 
 namespace ScannerWindowApplication
 {
     public partial class ScannerConfig : Form
     {
         ScannerDashboard parentSD;
-
+        //string connectionString = @"Data Source=.\SQLServerr2;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa123";
+        string connectionString = @"Data Source=HSTBHSVAMDS\SQLEXPRESS;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa@123";
         public ScannerConfig(ScannerDashboard sd)
         {
+            MySqlHelper.Initialize(connectionString);
+
             InitializeComponent();
             parentSD = sd;
         }
-                
+
         private void ScannerConfig_Load(object sender, EventArgs e)
         {
-            string fileName = "symbols1.txt";
-
-            var fileLines = File.ReadAllLines(fileName);
-            Array.Sort(fileLines); // alphabetically sorting the symbols
-
-            foreach (var singleLine in fileLines)
+            try
             {
-                cmbSymbol.Items.Add(singleLine);
+                string fileName = "symbols1.txt";
+
+                var fileLines = File.ReadAllLines(fileName);
+                Array.Sort(fileLines); // alphabetically sorting the symbols
+
+                foreach (var singleLine in fileLines)
+                {
+                    cmbSymbol.Items.Add(singleLine);
+                }
+
+                var filterLines = File.ReadAllLines("filterconfig.txt");
+
+                foreach (var singleLine in filterLines)
+                {
+                    string[] filterArray = singleLine.Split(',');
+                    DataGridViewRow row = new DataGridViewRow();
+
+                    // new symbol, add it in the gridview
+                    DataGridViewTextBoxCell cellSymbol = new DataGridViewTextBoxCell();
+                    cellSymbol.Value = filterArray[0];
+                    row.Cells.Add(cellSymbol);
+
+                    DataGridViewTextBoxCell cellExch = new DataGridViewTextBoxCell();
+                    cellExch.Value = filterArray[1];
+                    row.Cells.Add(cellExch);
+
+                    DataGridViewTextBoxCell cellSeries = new DataGridViewTextBoxCell();
+                    cellSeries.Value = filterArray[2];
+                    row.Cells.Add(cellSeries);
+
+                    DataGridViewTextBoxCell cellOptType = new DataGridViewTextBoxCell();
+                    cellOptType.Value = filterArray[3];
+                    row.Cells.Add(cellOptType);
+
+                    DataGridViewTextBoxCell cellExpiry = new DataGridViewTextBoxCell();
+                    cellExpiry.Value = filterArray[4];
+                    row.Cells.Add(cellExpiry);
+
+                    DataGridViewTextBoxCell cellStrike = new DataGridViewTextBoxCell();
+                    cellStrike.Value = filterArray[5];
+                    row.Cells.Add(cellStrike);
+
+                    DataGridViewTextBoxCell cellClosePrice = new DataGridViewTextBoxCell();
+                    cellClosePrice.Value = filterArray[6];
+                    row.Cells.Add(cellClosePrice);
+
+                    DataGridViewTextBoxCell cellLTP = new DataGridViewTextBoxCell();
+                    cellLTP.Value = filterArray[7];
+                    row.Cells.Add(cellLTP);
+
+                    DataGridViewTextBoxCell cellQuantity = new DataGridViewTextBoxCell();
+                    cellQuantity.Value = filterArray[8];
+                    row.Cells.Add(cellQuantity);
+
+                    DataGridViewCheckBoxCell cellApply = new DataGridViewCheckBoxCell();
+                    cellApply.Value = filterArray[9];
+                    row.Cells.Add(cellApply);
+
+                    filterGridView.Rows.Add(row);
+                }
             }
-
-            var filterLines = File.ReadAllLines("filterconfig.txt");
-
-            foreach (var singleLine in filterLines)
+            catch(Exception ex)
             {
-                string[] filterArray = singleLine.Split(',');
-                DataGridViewRow row = new DataGridViewRow();
 
-                // new symbol, add it in the gridview
-                DataGridViewTextBoxCell cellSymbol = new DataGridViewTextBoxCell();
-                cellSymbol.Value = filterArray[0];
-                row.Cells.Add(cellSymbol);
-
-                DataGridViewTextBoxCell cellClosePrice = new DataGridViewTextBoxCell();
-                cellClosePrice.Value = filterArray[1];
-                row.Cells.Add(cellClosePrice);
-
-                DataGridViewTextBoxCell cellLTP = new DataGridViewTextBoxCell();
-                cellLTP.Value = filterArray[2];
-                row.Cells.Add(cellLTP);
-
-                DataGridViewTextBoxCell cellQuantity = new DataGridViewTextBoxCell();
-                cellQuantity.Value = filterArray[3];
-                row.Cells.Add(cellQuantity);
-
-                DataGridViewCheckBoxCell cellApply = new DataGridViewCheckBoxCell();
-                cellApply.Value = filterArray[4];
-                row.Cells.Add(cellApply);
-
-                filterGridView.Rows.Add(row);
             }
         }
 
@@ -69,19 +100,33 @@ namespace ScannerWindowApplication
         {
             if (cmbSymbol.SelectedItem != null)
             {
-                string symbol = cmbSymbol.SelectedItem.ToString().ToUpper();
+                var symbol = cmbSymbol.SelectedItem;
+                var exch = cmbExch.SelectedItem;
+                var series = cmbSymbolType.SelectedItem;
+                var opttype = cmbOptType.SelectedItem;
+                var expiry = cmbExpiry.SelectedItem;
+                var strike = cmbStrike.SelectedItem;
+
                 Boolean symbolExists = false;
                 foreach (DataGridViewRow row in filterGridView.Rows)
                 {
                     //((DataGridViewCheckBoxCell)row.Cells[0]).Value = true;
-                    string symbolCell = ((DataGridViewTextBoxCell)row.Cells[0]).Value.ToString();
-                    if(symbol.Equals(symbolCell))
+                    var symbolCell = ((DataGridViewTextBoxCell)row.Cells[0]).Value;
+                    var exchCell = ((DataGridViewTextBoxCell)row.Cells[1]).Value;
+                    var seriesCell = ((DataGridViewTextBoxCell)row.Cells[2]).Value;
+                    var opttypeCell = ((DataGridViewTextBoxCell)row.Cells[3]).Value;
+                    var expiryCell = ((DataGridViewTextBoxCell)row.Cells[4]).Value;
+                    var strikeCell = ((DataGridViewTextBoxCell)row.Cells[5]).Value;
+
+                    if (symbol == symbolCell && exch == exchCell && series == seriesCell
+                        && opttype == opttypeCell && expiry == expiryCell && strike == strikeCell)
                     {
                         symbolExists = true;
+                        break;
                     }
                 }
 
-                if(symbolExists)
+                if (symbolExists)
                 {
                     // symbol already exists in the gridview, cannot add twice
                     MessageBox.Show("Symbol Already exists in Table");
@@ -100,7 +145,7 @@ namespace ScannerWindowApplication
                         else
                             closePrice = Convert.ToDouble(txtClosePrice.Text.Trim());
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show("Please enter valid ClosePrice (decimal numbers) ");
                         return;
@@ -135,16 +180,37 @@ namespace ScannerWindowApplication
                         MessageBox.Show("Please enter valid Quantity (numbers) ");
                         return;
                     }
-                    
+
                     // new symbol, add it in the gridview
+
                     DataGridViewTextBoxCell cellSymbol = new DataGridViewTextBoxCell();
                     row.Cells.Add(cellSymbol);
                     cellSymbol.Value = symbol;
+
+                    DataGridViewTextBoxCell cellExch = new DataGridViewTextBoxCell();
+                    row.Cells.Add(cellExch);
+                    cellExch.Value = cmbExch.SelectedItem;
+
+                    DataGridViewTextBoxCell cellSeries = new DataGridViewTextBoxCell();
+                    row.Cells.Add(cellSeries);
+                    cellSeries.Value = cmbSymbolType.SelectedItem;
+
+                    DataGridViewTextBoxCell cellOptType = new DataGridViewTextBoxCell();
+                    row.Cells.Add(cellOptType);
+                    cellOptType.Value = cmbOptType.SelectedItem;
+
+                    DataGridViewTextBoxCell cellExpiry = new DataGridViewTextBoxCell();
+                    row.Cells.Add(cellExpiry);
+                    cellExpiry.Value = cmbExpiry.SelectedItem;
                                         
+                    DataGridViewTextBoxCell cellStrike = new DataGridViewTextBoxCell();
+                    row.Cells.Add(cellStrike);
+                    cellStrike.Value = cmbStrike.SelectedItem;
+
                     DataGridViewTextBoxCell cellClosePrice = new DataGridViewTextBoxCell();
                     cellClosePrice.Value = closePrice;
                     row.Cells.Add(cellClosePrice);
-                    
+
                     DataGridViewTextBoxCell cellLtp = new DataGridViewTextBoxCell();
                     cellLtp.Value = ltp;
                     row.Cells.Add(cellLtp);
@@ -159,7 +225,7 @@ namespace ScannerWindowApplication
 
                     filterGridView.Rows.Add(row);
 
-                    MessageBox.Show( symbol + " - Added Successfully");
+                    MessageBox.Show(symbol + " - Added Successfully");
                 }
             }
         }
@@ -169,17 +235,25 @@ namespace ScannerWindowApplication
             // save all the setting in filterconfig.txt
 
             File.Delete("filterconfig.txt");
+            parentSD.dictFilters.Clear();
 
             foreach (DataGridViewRow row in filterGridView.Rows)
             {
                 //((DataGridViewCheckBoxCell)row.Cells[0]).Value = true;
                 string symbol = ((DataGridViewTextBoxCell)row.Cells[0]).Value.ToString();
-                string closePrice = ((DataGridViewTextBoxCell)row.Cells[1]).Value.ToString();
-                string ltp = ((DataGridViewTextBoxCell)row.Cells[2]).Value.ToString();
-                string quantity = ((DataGridViewTextBoxCell)row.Cells[3]).Value.ToString();
-                string apply = ((DataGridViewCheckBoxCell)row.Cells[5]).Value.ToString();
+                var exch = ((DataGridViewTextBoxCell)row.Cells[1]).Value;
+                var series = ((DataGridViewTextBoxCell)row.Cells[2]).Value;                
+                var opttype = ((DataGridViewTextBoxCell)row.Cells[3]).Value;
+                var expiry = ((DataGridViewTextBoxCell)row.Cells[4]).Value;
+                var strike = ((DataGridViewTextBoxCell)row.Cells[5]).Value;
 
-                string line = symbol + "," + closePrice + "," + ltp + "," + quantity + "," + apply + "\n";
+                string closePrice = ((DataGridViewTextBoxCell)row.Cells[6]).Value.ToString();
+                string ltp = ((DataGridViewTextBoxCell)row.Cells[7]).Value.ToString();
+                string quantity = ((DataGridViewTextBoxCell)row.Cells[8]).Value.ToString();
+                string apply = ((DataGridViewCheckBoxCell)row.Cells[9]).Value.ToString();
+
+                string line = symbol + "," + exch + "," + series + "," + opttype + "," 
+                    + expiry  + "," + strike + "," + closePrice + "," + ltp + "," + quantity + "," + apply + "\n";
 
                 File.AppendAllText("filterconfig.txt", line);
 
@@ -188,22 +262,146 @@ namespace ScannerWindowApplication
                 if (applyFlag == true)
                 {
                     SymbolFilter symFilter = new SymbolFilter();
+                    
+                    symFilter.exch = exch == null ? null : exch.ToString();
+                    symFilter.series = series == null ? null : series.ToString();
+                    symFilter.expiry = expiry == null ? null : expiry.ToString();
+                    symFilter.opttype = opttype == null ? null : opttype.ToString();
+                    symFilter.strike = strike == null ? null : strike.ToString();
+
                     symFilter.closePrice = Convert.ToDouble(closePrice);
                     symFilter.ltp = Convert.ToDouble(ltp);
                     symFilter.quantity = Convert.ToInt32(quantity);
-
+                    
                     parentSD.dictFilters[symbol] = symFilter;
                 }
-                else
-                {
-                    if(parentSD.dictFilters.ContainsKey(symbol))
-                        parentSD.dictFilters.Remove(symbol);
-                }
+                //else
+                //{
+                //    if (parentSD.dictFilters.ContainsKey(symbol))
+                //        parentSD.dictFilters.Remove(symbol);
+                //}
             }
 
             MessageBox.Show("Filter's Saved");
 
-            
+
         }
+
+        private void cmbExch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var symbol = cmbSymbol.SelectedItem.ToString();
+            var exch = cmbExch.SelectedItem.ToString();            
+
+            var query = "select distinct series from LPINTRADAY.dbo.vwFeed where symbol = '" + symbol + "' and exch = '" + cmbExch.SelectedItem + "'";
+
+            cmbSymbolType.Items.Clear();
+            cmbExpiry.Items.Clear();
+            cmbOptType.Items.Clear();
+            cmbStrike.Items.Clear();
+
+            cmbSymbolType.Text = "";
+            cmbExpiry.Text = "";
+            cmbOptType.Text = "";
+            cmbStrike.Text = "";
+
+            var ohlcdt = MySqlHelper.Instance.GetDataTable(query);
+
+            DataRow curRow;
+
+            for (var i = 0; i < ohlcdt.Rows.Count; i++)
+            {
+                curRow = ohlcdt.Rows[i];
+                cmbSymbolType.Items.Add(curRow[0].ToString());
+            }
+        }
+
+        private void cmbSymbolType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var symbol = cmbSymbol.SelectedItem.ToString();
+            var query = "select distinct CONVERT(VARCHAR(10),ExpiryDate,105) from LPINTRADAY.dbo.vwFeed where symbol = '" + symbol + "' and exch = '" + cmbExch.SelectedItem +"'";
+            //for NFO no OptType & Strike
+            if (cmbExch.SelectedItem.ToString() == "NOP")
+            {                
+                if(cmbSymbolType.SelectedItem != null)
+                    query = query + " and series = '" + cmbSymbolType.SelectedItem + "'";
+            }
+
+            cmbExpiry.Items.Clear();
+
+            var ohlcdt = MySqlHelper.Instance.GetDataTable(query);
+
+            DataRow curRow;
+
+            for (var i = 0; i < ohlcdt.Rows.Count; i++)
+            {
+                curRow = ohlcdt.Rows[i];
+                //MessageBox.Show(curRow[0].ToString().Substring(0, 10));
+                //DateTime dt1 = DateTime.ParseExact(curRow[0].ToString().Substring(0, 10), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime dt1 = DateTime.ParseExact(curRow[0].ToString().Substring(0, 10), "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                cmbExpiry.Items.Add(dt1.ToString("dd-MM-yyyy"));
+            }
+        }
+
+        private void cmbExpiry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var symbol = cmbSymbol.SelectedItem.ToString();
+            var exch = cmbExch.SelectedItem.ToString();
+            if (exch != "NFO")
+            {
+                var series = cmbSymbolType.SelectedItem.ToString();
+                var expiry = cmbExpiry.SelectedItem.ToString();
+
+                DateTime dt1 = DateTime.ParseExact(expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                var query = "select distinct OptType from LPINTRADAY.dbo.vwFeed where symbol = '"
+                    + symbol + "' and exch = '" + cmbExch.SelectedItem + "'"
+                     + " and Series = '" + series + "'"
+                      + " and ExpiryDate = '" + dt1.ToString("yyyy-MM-dd") + "'";
+
+                cmbOptType.Items.Clear();
+
+                var ohlcdt = MySqlHelper.Instance.GetDataTable(query);
+
+                DataRow curRow;
+
+                for (var i = 0; i < ohlcdt.Rows.Count; i++)
+                {
+                    curRow = ohlcdt.Rows[i];
+                    cmbOptType.Items.Add(curRow[0].ToString());
+                }
+            }
+        }
+
+        private void cmbOptType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var symbol = cmbSymbol.SelectedItem.ToString();
+            var exch = cmbExch.SelectedItem.ToString();
+            var series = cmbSymbolType.SelectedItem.ToString();
+            var expiry = cmbExpiry.SelectedItem.ToString();
+            var opttype = cmbOptType.SelectedItem.ToString();
+
+            DateTime dt1 = DateTime.ParseExact(expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+            var query = "select distinct strikePrice from LPINTRADAY.dbo.vwFeed where symbol = '" 
+                + symbol + "' and exch = '" + cmbExch.SelectedItem + "'"
+                 + " and Series = '" + series + "'"
+                  + " and ExpiryDate = '" + dt1.ToString("yyyy-MM-dd") + "'"
+                   + " and OptType = '" + opttype + "'";
+
+            cmbStrike.Items.Clear();
+            cmbStrike.Text = "";
+
+            var ohlcdt = MySqlHelper.Instance.GetDataTable(query);
+
+            DataRow curRow;
+
+            for (var i = 0; i < ohlcdt.Rows.Count; i++)
+            {
+                curRow = ohlcdt.Rows[i];
+                cmbStrike.Items.Add(curRow[0].ToString());
+            }
+        }
+
+        
     }
 }

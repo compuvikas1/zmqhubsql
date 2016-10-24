@@ -51,6 +51,8 @@ namespace ScannerWindowApplication
                             {
                                 //string messageReceived = subSocket.ReceiveFrameString();
                                 string[] arr = messageReceived.Split(',');
+                                //SELECT Symbol, Exch, Series, OptType, StrikePrice, ExpiryDate, MLot, ScripNo, UpdateTime, PCloseRate, LastRate, TotalQty
+
                                 Feed feed = new Feed(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8]);
                                 ScannerBox.qfeed.Enqueue(feed);
                                 Console.WriteLine(messageReceived);

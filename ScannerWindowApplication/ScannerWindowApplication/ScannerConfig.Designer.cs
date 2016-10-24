@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cmbExch = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cmbStrike = new System.Windows.Forms.ComboBox();
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.txtStrike = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.cmbCallPut = new System.Windows.Forms.ComboBox();
+            this.cmbOptType = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.cmbExpiry = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -50,6 +52,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.filterGridView = new System.Windows.Forms.DataGridView();
             this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Exch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Series = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OptType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Expiry = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Strike = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ClosePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -71,11 +78,13 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.cmbExch);
+            this.splitContainer1.Panel1.Controls.Add(this.label8);
+            this.splitContainer1.Panel1.Controls.Add(this.cmbStrike);
             this.splitContainer1.Panel1.Controls.Add(this.txtQuantity);
             this.splitContainer1.Panel1.Controls.Add(this.label7);
-            this.splitContainer1.Panel1.Controls.Add(this.txtStrike);
             this.splitContainer1.Panel1.Controls.Add(this.label6);
-            this.splitContainer1.Panel1.Controls.Add(this.cmbCallPut);
+            this.splitContainer1.Panel1.Controls.Add(this.cmbOptType);
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.cmbExpiry);
             this.splitContainer1.Panel1.Controls.Add(this.label4);
@@ -98,6 +107,35 @@
             this.splitContainer1.SplitterDistance = 110;
             this.splitContainer1.TabIndex = 0;
             // 
+            // cmbExch
+            // 
+            this.cmbExch.FormattingEnabled = true;
+            this.cmbExch.Items.AddRange(new object[] {
+            "NFO",
+            "NOP"});
+            this.cmbExch.Location = new System.Drawing.Point(204, 8);
+            this.cmbExch.Name = "cmbExch";
+            this.cmbExch.Size = new System.Drawing.Size(65, 21);
+            this.cmbExch.TabIndex = 22;
+            this.cmbExch.SelectedIndexChanged += new System.EventHandler(this.cmbExch_SelectedIndexChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(145, 9);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(31, 13);
+            this.label8.TabIndex = 21;
+            this.label8.Text = "Exch";
+            // 
+            // cmbStrike
+            // 
+            this.cmbStrike.FormattingEnabled = true;
+            this.cmbStrike.Location = new System.Drawing.Point(775, 6);
+            this.cmbStrike.Name = "cmbStrike";
+            this.cmbStrike.Size = new System.Drawing.Size(121, 21);
+            this.cmbStrike.TabIndex = 20;
+            // 
             // txtQuantity
             // 
             this.txtQuantity.Location = new System.Drawing.Point(338, 58);
@@ -114,58 +152,46 @@
             this.label7.TabIndex = 18;
             this.label7.Text = "Quantity";
             // 
-            // txtStrike
-            // 
-            this.txtStrike.Location = new System.Drawing.Point(677, 4);
-            this.txtStrike.Name = "txtStrike";
-            this.txtStrike.Size = new System.Drawing.Size(100, 20);
-            this.txtStrike.TabIndex = 17;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(619, 7);
+            this.label6.Location = new System.Drawing.Point(719, 7);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Strike";
             // 
-            // cmbCallPut
+            // cmbOptType
             // 
-            this.cmbCallPut.FormattingEnabled = true;
-            this.cmbCallPut.Items.AddRange(new object[] {
-            "Call",
-            "Put"});
-            this.cmbCallPut.Location = new System.Drawing.Point(527, 4);
-            this.cmbCallPut.Name = "cmbCallPut";
-            this.cmbCallPut.Size = new System.Drawing.Size(68, 21);
-            this.cmbCallPut.TabIndex = 15;
+            this.cmbOptType.FormattingEnabled = true;
+            this.cmbOptType.Location = new System.Drawing.Point(627, 4);
+            this.cmbOptType.Name = "cmbOptType";
+            this.cmbOptType.Size = new System.Drawing.Size(68, 21);
+            this.cmbOptType.TabIndex = 15;
+            this.cmbOptType.SelectedIndexChanged += new System.EventHandler(this.cmbOptType_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(460, 9);
+            this.label5.Location = new System.Drawing.Point(573, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 13);
+            this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 14;
-            this.label5.Text = "Call / Put";
+            this.label5.Text = "OptType";
             // 
             // cmbExpiry
             // 
             this.cmbExpiry.FormattingEnabled = true;
-            this.cmbExpiry.Items.AddRange(new object[] {
-            "27-10-2016",
-            "24-11-2016",
-            "29-12-2016"});
-            this.cmbExpiry.Location = new System.Drawing.Point(338, 6);
+            this.cmbExpiry.Location = new System.Drawing.Point(472, 6);
             this.cmbExpiry.Name = "cmbExpiry";
             this.cmbExpiry.Size = new System.Drawing.Size(95, 21);
             this.cmbExpiry.TabIndex = 13;
+            this.cmbExpiry.SelectedIndexChanged += new System.EventHandler(this.cmbExpiry_SelectedIndexChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(284, 9);
+            this.label4.Location = new System.Drawing.Point(418, 9);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 13);
             this.label4.TabIndex = 12;
@@ -174,23 +200,20 @@
             // cmbSymbolType
             // 
             this.cmbSymbolType.FormattingEnabled = true;
-            this.cmbSymbolType.Items.AddRange(new object[] {
-            "Cash",
-            "Future",
-            "Option"});
-            this.cmbSymbolType.Location = new System.Drawing.Point(194, 6);
+            this.cmbSymbolType.Location = new System.Drawing.Point(342, 6);
             this.cmbSymbolType.Name = "cmbSymbolType";
             this.cmbSymbolType.Size = new System.Drawing.Size(68, 21);
             this.cmbSymbolType.TabIndex = 11;
+            this.cmbSymbolType.SelectedIndexChanged += new System.EventHandler(this.cmbSymbolType_SelectedIndexChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(146, 9);
+            this.label3.Location = new System.Drawing.Point(294, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
+            this.label3.Size = new System.Drawing.Size(36, 13);
             this.label3.TabIndex = 10;
-            this.label3.Text = "Type";
+            this.label3.Text = "Series";
             // 
             // btnSaveFilter
             // 
@@ -277,6 +300,11 @@
             this.filterGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.filterGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Symbol,
+            this.Exch,
+            this.Series,
+            this.OptType,
+            this.Expiry,
+            this.Strike,
             this.ClosePrice,
             this.LTP,
             this.Quantity,
@@ -292,6 +320,36 @@
             this.Symbol.HeaderText = "Symbol";
             this.Symbol.Name = "Symbol";
             this.Symbol.ReadOnly = true;
+            // 
+            // Exch
+            // 
+            this.Exch.HeaderText = "Exch";
+            this.Exch.Name = "Exch";
+            this.Exch.ReadOnly = true;
+            // 
+            // Series
+            // 
+            this.Series.HeaderText = "Series";
+            this.Series.Name = "Series";
+            this.Series.ReadOnly = true;
+            // 
+            // OptType
+            // 
+            this.OptType.HeaderText = "OptType";
+            this.OptType.Name = "OptType";
+            this.OptType.ReadOnly = true;
+            // 
+            // Expiry
+            // 
+            this.Expiry.HeaderText = "Expiry";
+            this.Expiry.Name = "Expiry";
+            this.Expiry.ReadOnly = true;
+            // 
+            // Strike
+            // 
+            this.Strike.HeaderText = "Strike";
+            this.Strike.Name = "Strike";
+            this.Strike.ReadOnly = true;
             // 
             // ClosePrice
             // 
@@ -348,13 +406,20 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbSymbolType;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cmbCallPut;
+        private System.Windows.Forms.ComboBox cmbOptType;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtStrike;
         private System.Windows.Forms.TextBox txtQuantity;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox cmbStrike;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox cmbExch;
         private System.Windows.Forms.DataGridViewTextBoxColumn Symbol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Exch;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Series;
+        private System.Windows.Forms.DataGridViewTextBoxColumn OptType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Expiry;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Strike;
         private System.Windows.Forms.DataGridViewTextBoxColumn ClosePrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn LTP;
         private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;

@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Feed.cs" />
+    <Compile Include="MySqlHelper.cs" />
     <Compile Include="SymbolFilter.cs" />
     <Compile Include="ScannerBox.cs">
       <SubType>Form</SubType>
