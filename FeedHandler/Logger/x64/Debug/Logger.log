@@ -1,7 +1,7 @@
 ﻿  stdafx.cpp
   Logger.cpp
-d:\zmqhubsql\feedhandler\logger\logger.cpp(124): warning C4018: '>': signed/unsigned mismatch
-d:\zmqhubsql\feedhandler\logger\logger.cpp(170): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-d:\zmqhubsql\feedhandler\logger\logger.cpp(174): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  Logger.vcxproj -> D:\ZMQHUBSQL\FeedHandler\x64\Debug\Logger.exe
-  Logger.vcxproj -> D:\ZMQHUBSQL\FeedHandler\x64\Debug\Logger.pdb (Full PDB)
+d:\zmqhubsql\zmqhubsql\feedhandler\logger\logger.cpp(124): warning C4018: '>': signed/unsigned mismatch
+d:\zmqhubsql\zmqhubsql\feedhandler\logger\logger.cpp(170): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+d:\zmqhubsql\zmqhubsql\feedhandler\logger\logger.cpp(174): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Logger.vcxproj -> D:\ZMQHUBSQL\zmqhubsql\FeedHandler\x64\Debug\Logger.exe
+  Logger.vcxproj -> D:\ZMQHUBSQL\zmqhubsql\FeedHandler\x64\Debug\Logger.pdb (Full PDB)

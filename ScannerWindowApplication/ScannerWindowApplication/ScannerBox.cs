@@ -59,42 +59,54 @@ namespace ScannerWindowApplication
                 bool flagLtpCondition = true;
                 bool flagQuantityCondition = true;
 
-                SymbolFilter symbolfilter;
-                if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out symbolfilter))
-                {                
-                    if(symbolfilter.symbol != null && feed.symbol != symbolfilter.symbol)
+                List<SymbolFilter> listSymbolFilter;
+                if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out listSymbolFilter))
+                {
+                    foreach (var symbolfilter in listSymbolFilter)
                     {
-                        flagSymbolCondition = false;
-                    }
-                    if (symbolfilter.expiry != null && symbolfilter.expiry != "")
-                    {
-                       // MessageBox.Show(feed.expiry + " not equal " + symbolfilter.expiry);
-
-                        //DateTime dt1 = DateTime.ParseExact(symbolfilter.expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                        
-                        if (feed.expiry != symbolfilter.expiry)
-                        {                            
-                            flagExpiryCondition = false;
-                        }
+                        if (symbolfilter.symbol != null && feed.symbol != symbolfilter.symbol)                        
+                            flagSymbolCondition = false;                        
                         else
-                            flagExpiryCondition = true;
-                    }
-                    if (symbolfilter.strike != null && symbolfilter.strike != "" && feed.strike != symbolfilter.strike)
-                    {
-                        flagStrikeCondition = false;
-                    }
+                            flagSymbolCondition = true;
 
-                    if (symbolfilter.closePrice != 0 && closePrice < symbolfilter.closePrice)
-                    {
-                        flagClosePriceCondition = false;
-                    }
-                    if (symbolfilter.ltp != 0 && ltp < symbolfilter.ltp)
-                    {
-                        flagLtpCondition = false;
-                    }
-                    if (symbolfilter.quantity != 0 && quantity < symbolfilter.quantity)
-                    {
-                        flagQuantityCondition = false;
+                        if (symbolfilter.expiry != null && symbolfilter.expiry != "")
+                        {
+                            // MessageBox.Show(feed.expiry + " not equal " + symbolfilter.expiry);
+                            Console.WriteLine(feed.expiry + " and " + symbolfilter.expiry);
+                            //DateTime dt1 = DateTime.ParseExact(symbolfilter.expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                            if (feed.expiry != symbolfilter.expiry)                            
+                                flagExpiryCondition = false;                            
+                            else
+                                flagExpiryCondition = true;
+                        }
+
+                        if (symbolfilter.strike != null && symbolfilter.strike != "" && feed.strike != symbolfilter.strike)                        
+                            flagStrikeCondition = false;
+                        else
+                            flagStrikeCondition = true;
+
+                        if (symbolfilter.closePrice != 0 && closePrice < symbolfilter.closePrice)                        
+                            flagClosePriceCondition = false;
+                        else
+                            flagClosePriceCondition = true;
+
+                        if (symbolfilter.ltp != 0 && ltp < symbolfilter.ltp)                        
+                            flagLtpCondition = false;
+                        else
+                            flagLtpCondition = true;
+
+                        if (symbolfilter.quantity != 0 && quantity < symbolfilter.quantity)                        
+                            flagQuantityCondition = false;
+                        else
+                            flagQuantityCondition = true;
+
+                        if (flagSymbolCondition && flagExpiryCondition &&
+                            flagStrikeCondition && flagClosePriceCondition &&
+                            flagLtpCondition && flagQuantityCondition)
+                        {
+                            break;
+                        }
                     }
                 }
 
@@ -118,7 +130,7 @@ namespace ScannerWindowApplication
                             dgvRow.Cells[7].Value = round(feed.ltp, 2);
                             dgvRow.Cells[8].Value = round(feed.quantity, 2);                            
                         }
-                        
+                        //Console.WriteLine("Existed Row is added");
                         foundRow = true;
                         break;
                     }
@@ -129,7 +141,8 @@ namespace ScannerWindowApplication
                     if (flagSymbolCondition && flagExpiryCondition &&
                             flagStrikeCondition && flagClosePriceCondition &&
                             flagLtpCondition && flagQuantityCondition)
-                    {                        
+                    {
+                        //Console.WriteLine("new Row Added");                        
                         dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 8), feed.symbol, feed.expiry.Substring(0,10),
                             feed.strike, feed.callput, feed.exch, 
                              round(feed.closePrice, 2), round(feed.ltp, 2), feed.quantity);

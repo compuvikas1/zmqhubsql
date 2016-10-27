@@ -15,8 +15,8 @@ namespace ScannerWindowApplication
     public partial class ScannerConfig : Form
     {
         ScannerDashboard parentSD;
-        //string connectionString = @"Data Source=.\SQLServerr2;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa123";
-        string connectionString = @"Data Source=HSTBHSVAMDS\SQLEXPRESS;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa@123";
+        string connectionString = @"Data Source=.\SQLServerr2;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa123";
+        //string connectionString = @"Data Source=HSTBHSVAMDS\SQLEXPRESS;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa@123";
         public ScannerConfig(ScannerDashboard sd)
         {
             MySqlHelper.Initialize(connectionString);
@@ -272,8 +272,11 @@ namespace ScannerWindowApplication
                     symFilter.closePrice = Convert.ToDouble(closePrice);
                     symFilter.ltp = Convert.ToDouble(ltp);
                     symFilter.quantity = Convert.ToInt32(quantity);
-                    
-                    parentSD.dictFilters[symbol] = symFilter;
+
+                    if(parentSD.dictFilters.ContainsKey(symbol) == false)
+                        parentSD.dictFilters.Add(symbol, new List<SymbolFilter>());
+
+                    parentSD.dictFilters[symbol].Add(symFilter);                    
                 }
                 //else
                 //{

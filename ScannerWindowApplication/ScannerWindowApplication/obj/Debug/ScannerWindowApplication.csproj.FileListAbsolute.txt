@@ -30,3 +30,17 @@ D:\Rahul\ZMQHUBSQL\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\S
 D:\ZMQHUBSQL\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\ScannerWindowApplication.exe.config
 D:\ZMQHUBSQL\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.exe
 D:\ZMQHUBSQL\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.pdb
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\ScannerWindowApplication.exe.config
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.exe
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.pdb
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\ScannerWindowApplication.exe
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\ScannerWindowApplication.pdb
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\AsyncIO.dll
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\NetMQ.dll
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\bin\Debug\NetMQ.xml
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.ScannerBox.resources
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.ScannerDashboard.resources
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.Properties.Resources.resources
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.ScannerConfig.resources
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.csproj.GenerateResource.Cache
+D:\ZMQHUBSQL\zmqhubsql\ScannerWindowApplication\ScannerWindowApplication\obj\Debug\ScannerWindowApplication.csprojResolveAssemblyReference.cache

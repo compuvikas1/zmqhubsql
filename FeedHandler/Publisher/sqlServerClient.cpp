@@ -56,8 +56,8 @@ int fetchFeeds(void * publisher) {
 	SQLWCHAR retconstring[1024];
 	
 	//retcode = SQLDriverConnectW(sqlconnectionhandle, NULL, L"DSN=db1; SERVER=SONY-VAIO;DATABASE=LPIntraDay;UID=zmq1;PWD=test123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_COMPLETE);
-	//retcode = SQLDriverConnectW(sqlconnectionhandle, NULL, L"DSN=db1;DATABASE=LPINTRADAY;UID=sa;PWD=sa123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_COMPLETE);
-	retcode = SQLDriverConnectW(sqlconnectionhandle, NULL, L"DSN=db1;DATABASE=LPINTRADAY;UID=sa;PWD=sa@123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_COMPLETE);
+	retcode = SQLDriverConnectW(sqlconnectionhandle, NULL, L"DSN=db1;DATABASE=LPINTRADAY;UID=sa;PWD=sa123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_COMPLETE);
+	//retcode = SQLDriverConnectW(sqlconnectionhandle, NULL, L"DSN=db1;DATABASE=LPINTRADAY;UID=sa;PWD=sa@123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_COMPLETE);
 	
 	switch (retcode) {
 	case SQL_SUCCESS_WITH_INFO:
@@ -78,6 +78,7 @@ int fetchFeeds(void * publisher) {
 		return -1;
 	}
 	int iRet = SQLExecDirectW(sqlstatementhandle, L"SELECT Symbol, UpdateTime, CONVERT(VARCHAR(10),ExpiryDate,105), OptType, StrikePrice, Exch, PCloseRate, LastRate, TotalQty, Series, MLot, ScripNo FROM LPReliableMap.dbo.vwFeed where symbol = 'NIFTY'", SQL_NTS);
+	//int iRet = SQLExecDirectW(sqlstatementhandle, L"SELECT Symbol, UpdateTime, CONVERT(VARCHAR(10),ExpiryDate,105), OptType, StrikePrice, Exch, PCloseRate, LastRate, TotalQty, Series, MLot, ScripNo FROM LPReliableMap.dbo.vwFeed", SQL_NTS);
 	
 	if (iRet != SQL_SUCCESS) {
 		show_error(SQL_HANDLE_STMT, sqlstatementhandle);
@@ -99,7 +100,7 @@ int fetchFeeds(void * publisher) {
 			outString.erase(outString.end()-1);
 			std::cout << outString << std::endl;
 			s_send(publisher, (char *)outString.c_str());
-			Sleep(50);
+			Sleep(100);
 			//std::cout << std::endl;
 		}
 		closeAll(sqlconnectionhandle, sqlstatementhandle, sqlenvhandle);

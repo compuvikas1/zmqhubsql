@@ -1,0 +1,18 @@
+﻿  stdafx.cpp
+  Logger.cpp
+Logger.cpp(124): warning C4018: '>': signed/unsigned mismatch
+Logger.cpp(170): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+Logger.cpp(174): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_errno
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_strerror
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_msg_init
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_msg_close
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_msg_data
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_ctx_new
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_ctx_set
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_ctx_destroy
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_close
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_bind
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_msg_recv
+Logger.obj : error LNK2001: unresolved external symbol __imp_zmq_socket
+D:\ZMQHUBSQL\zmqhubsql\FeedHandler\x64\Release\Logger.exe : fatal error LNK1120: 12 unresolved externals
