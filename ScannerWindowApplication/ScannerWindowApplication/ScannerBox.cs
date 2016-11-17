@@ -20,9 +20,30 @@ namespace ScannerWindowApplication
         private Thread myThread;
         public static Boolean openedMainForm = true;
         ScannerDashboard parentSD;
+
+        public static DataTable dtFeed = new DataTable();        
+
         public ScannerBox(ScannerDashboard sd)
         {
             InitializeComponent();
+            if (dtFeed.Columns.Contains("Time") == false)
+            {
+                var colTime = dtFeed.Columns.Add("Time");
+                var colSymbol = dtFeed.Columns.Add("Symbol");
+                var colExpiry = dtFeed.Columns.Add("Expiry");
+                var colStrike = dtFeed.Columns.Add("Strike");
+                var colPC = dtFeed.Columns.Add("PC");
+                var colExch = dtFeed.Columns.Add("Exch");
+                var colClosePrice = dtFeed.Columns.Add("ClosePrice");
+                var colLTP = dtFeed.Columns.Add("LTP");
+                var colQuantity = dtFeed.Columns.Add("Quantity");
+
+                // set primary key constain so we can search for specific rows
+                dtFeed.PrimaryKey = new[] { colSymbol, colExpiry, colStrike, colPC, colExch };
+            }
+
+            dataGridView1.DataSource = dtFeed;
+
             parentSD = sd;            
             ScannerBox.openedMainForm = true;
             myDelegate = new AddListItem(AddListItemMethod);
@@ -43,112 +64,50 @@ namespace ScannerWindowApplication
             if (ScannerBox.qfeed.Count > 0)
             {
                 Feed feed = ScannerBox.qfeed.Dequeue();
-                int rowIndex = 0;
-                Boolean foundRow = false;
 
-                //place condition for feedPrice
-                double closePrice = Convert.ToDouble(feed.closePrice);
-                double ltp = Convert.ToDouble(feed.ltp);
-                int quantity = Convert.ToInt32(feed.quantity);
+                var exisiting = dtFeed.Rows.Find(new Object[] { feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch });
+                if (exisiting != null)
+                    exisiting.ItemArray = new object[] { feed.feedtime, feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch, feed.closePrice, feed.ltp, feed.quantity };                
+                else
+                    dtFeed.Rows.Add(new Object[] { feed.feedtime, feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch, feed.closePrice, feed.ltp, feed.quantity });
 
-                bool flagSymbolCondition = true;
-                bool flagExpiryCondition = true;
-                bool flagStrikeCondition = true;
+                //int rowIndex = 0;
+                //Boolean foundRow = false;
 
-                bool flagClosePriceCondition = true;
-                bool flagLtpCondition = true;
-                bool flagQuantityCondition = true;
-
-                List<SymbolFilter> listSymbolFilter;
-                if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out listSymbolFilter))
-                {
-                    foreach (var symbolfilter in listSymbolFilter)
-                    {
-                        if (symbolfilter.symbol != null && feed.symbol != symbolfilter.symbol)                        
-                            flagSymbolCondition = false;                        
-                        else
-                            flagSymbolCondition = true;
-
-                        if (symbolfilter.expiry != null && symbolfilter.expiry != "")
-                        {
-                            // MessageBox.Show(feed.expiry + " not equal " + symbolfilter.expiry);
-                            Console.WriteLine(feed.expiry + " and " + symbolfilter.expiry);
-                            //DateTime dt1 = DateTime.ParseExact(symbolfilter.expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-
-                            if (feed.expiry != symbolfilter.expiry)                            
-                                flagExpiryCondition = false;                            
-                            else
-                                flagExpiryCondition = true;
-                        }
-
-                        if (symbolfilter.strike != null && symbolfilter.strike != "" && feed.strike != symbolfilter.strike)                        
-                            flagStrikeCondition = false;
-                        else
-                            flagStrikeCondition = true;
-
-                        if (symbolfilter.closePrice != 0 && closePrice < symbolfilter.closePrice)                        
-                            flagClosePriceCondition = false;
-                        else
-                            flagClosePriceCondition = true;
-
-                        if (symbolfilter.ltp != 0 && ltp < symbolfilter.ltp)                        
-                            flagLtpCondition = false;
-                        else
-                            flagLtpCondition = true;
-
-                        if (symbolfilter.quantity != 0 && quantity < symbolfilter.quantity)                        
-                            flagQuantityCondition = false;
-                        else
-                            flagQuantityCondition = true;
-
-                        if (flagSymbolCondition && flagExpiryCondition &&
-                            flagStrikeCondition && flagClosePriceCondition &&
-                            flagLtpCondition && flagQuantityCondition)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                foreach (DataGridViewRow dgvRow in dataGridView1.Rows)
-                {
-                    if (dgvRow.Cells[1].FormattedValue.ToString() == feed.symbol &&
-                        dgvRow.Cells[2].Value.ToString() == feed.expiry.Substring(0,10) &&
-                        dgvRow.Cells[3].Value.ToString() == feed.strike &&
-                        dgvRow.Cells[4].Value.ToString() == feed.callput)
-                    {
-                        if (flagSymbolCondition && flagExpiryCondition &&
-                            flagStrikeCondition && flagClosePriceCondition && 
-                            flagLtpCondition && flagQuantityCondition)
-                        {
-                            dgvRow.Cells[0].Value = feed.feedtime.Substring(11, 8);
-                            dgvRow.Cells[2].Value = feed.expiry.Substring(0,10);
-                            dgvRow.Cells[3].Value = feed.strike;
-                            dgvRow.Cells[4].Value = feed.callput;
-                            dgvRow.Cells[5].Value = round(feed.exch, 2);
-                            dgvRow.Cells[6].Value = round(feed.closePrice, 2);
-                            dgvRow.Cells[7].Value = round(feed.ltp, 2);
-                            dgvRow.Cells[8].Value = round(feed.quantity, 2);                            
-                        }
-                        //Console.WriteLine("Existed Row is added");
-                        foundRow = true;
-                        break;
-                    }
-                    rowIndex++;
-                }
-                if (foundRow == false)
-                {
-                    if (flagSymbolCondition && flagExpiryCondition &&
-                            flagStrikeCondition && flagClosePriceCondition &&
-                            flagLtpCondition && flagQuantityCondition)
-                    {
-                        //Console.WriteLine("new Row Added");                        
-                        dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 8), feed.symbol, feed.expiry.Substring(0,10),
-                            feed.strike, feed.callput, feed.exch, 
-                             round(feed.closePrice, 2), round(feed.ltp, 2), feed.quantity);
-                    }
-                }
-                dataGridView1.Update();
+                ////place condition for feedPrice                
+                
+                //foreach (DataGridViewRow dgvRow in dataGridView1.Rows)
+                //{
+                //    if (string.Compare(dgvRow.Cells[1].FormattedValue.ToString(),feed.symbol)== 0 &&
+                //        string.Compare(dgvRow.Cells[2].Value.ToString(),feed.expiry.Substring(0,10))== 0 &&
+                //        string.Compare(dgvRow.Cells[3].Value.ToString(),feed.strike) == 0 &&
+                //        string.Compare(dgvRow.Cells[4].Value.ToString(),feed.callput)==0)
+                //    {
+                //        dgvRow.Cells[0].Value = feed.feedtime.Substring(11, 9);
+                //        dgvRow.Cells[2].Value = feed.expiry.Substring(0,10);
+                //        dgvRow.Cells[3].Value = feed.strike;
+                //        dgvRow.Cells[4].Value = feed.callput;
+                //        dgvRow.Cells[5].Value = feed.exch;
+                //        dgvRow.Cells[6].Value = round(feed.closePrice, 2);
+                //        dgvRow.Cells[7].Value = round(feed.ltp, 2);
+                //        dgvRow.Cells[8].Value = feed.quantity;                            
+                        
+                //        //Console.WriteLine("Existed Row is updated");
+                //        foundRow = true;
+                //        break;
+                //    }
+                //    rowIndex++;
+                //}
+                //if (foundRow == false)
+                //{
+                //    {
+                //        //Console.WriteLine("new Row Added");                        
+                //        dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 9), feed.symbol, feed.expiry.Substring(0,10),
+                //            feed.strike, feed.callput, feed.exch, 
+                //             round(feed.closePrice, 2), round(feed.ltp, 2), feed.quantity);
+                //    }
+                //}
+                //dataGridView1.Update();
             }
         }
 

@@ -11,6 +11,8 @@ namespace ScannerWindowApplication
 {
     class Subscriber
     {
+        public static Dictionary<string, string> dictFeedDetails = new Dictionary<string, string>();
+
         ScannerDashboard parentSD;
         public Subscriber(ScannerDashboard sd) { parentSD = sd; }
         public void ThreadB()
@@ -34,12 +36,12 @@ namespace ScannerWindowApplication
                     {
                         foreach(var filters in parentSD.dictFilters)
                         {                            
-                            Console.WriteLine("Subscribing Socket for Symbol : " + filters.Key);
+                            //Console.WriteLine("Subscribing Socket for Symbol : " + filters.Key);
                             subSocket.Subscribe(filters.Key);
                         }
                     }
 
-                    Console.WriteLine("Subscriber socket connecting...");
+                    //Console.WriteLine("Subscriber socket connecting...");
                     while (true)
                     {
                         try
@@ -54,8 +56,96 @@ namespace ScannerWindowApplication
                                 //SELECT Symbol, Exch, Series, OptType, StrikePrice, ExpiryDate, MLot, ScripNo, UpdateTime, PCloseRate, LastRate, TotalQty
 
                                 Feed feed = new Feed(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8]);
-                                ScannerBox.qfeed.Enqueue(feed);
-                                Console.WriteLine(messageReceived);
+                                bool flagSymbolCondition = true;
+                                bool flagExpiryCondition = true;
+                                bool flagExchCondition = true;
+                                bool flagStrikeCondition = true;
+
+                                bool flagClosePriceCondition = true;
+                                bool flagLtpCondition = true;
+                                bool flagQuantityCondition = true;
+
+                                bool foundKey = false;
+
+                                List<SymbolFilter> listSymbolFilter;
+                                if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out listSymbolFilter))
+                                {
+                                    foreach (var symbolfilter in listSymbolFilter)
+                                    {
+                                        if (symbolfilter.symbol != null && string.Compare(feed.symbol, symbolfilter.symbol) != 0)
+                                            flagSymbolCondition = false;
+                                        else
+                                            flagSymbolCondition = true;
+
+                                        if (symbolfilter.expiry != null && symbolfilter.expiry != "")
+                                        {
+                                            // MessageBox.Show(feed.expiry + " not equal " + symbolfilter.expiry);
+                                            //Console.WriteLine(feed.expiry + " and " + symbolfilter.expiry);
+                                            //DateTime dt1 = DateTime.ParseExact(symbolfilter.expiry, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                                            if (string.Compare(feed.expiry, symbolfilter.expiry) != 0)
+                                                flagExpiryCondition = false;
+                                            else
+                                                flagExpiryCondition = true;
+                                        }
+
+                                        if (symbolfilter.exch != null && symbolfilter.exch != "" && string.Compare(feed.exch, symbolfilter.exch) != 0)
+                                            flagExchCondition = false;
+                                        else
+                                            flagExchCondition = true;
+
+                                        if (flagExchCondition == true)
+                                        {
+                                            if (symbolfilter.strike != null && symbolfilter.strike != "" && string.Compare(feed.strike, symbolfilter.strike) != 0)
+                                                flagStrikeCondition = false;
+                                            else
+                                                flagStrikeCondition = true;
+                                        }
+
+                                        double closePrice = Convert.ToDouble(feed.closePrice);
+                                        double ltp = Convert.ToDouble(feed.ltp);
+                                        int quantity = Convert.ToInt32(feed.quantity);
+
+                                        if (symbolfilter.closePrice != 0 && closePrice < symbolfilter.closePrice)
+                                            flagClosePriceCondition = false;
+                                        else
+                                            flagClosePriceCondition = true;
+
+                                        if (symbolfilter.ltp != 0 && ltp < symbolfilter.ltp)
+                                            flagLtpCondition = false;
+                                        else
+                                            flagLtpCondition = true;
+
+                                        if (symbolfilter.quantity != 0 && quantity < symbolfilter.quantity)
+                                            flagQuantityCondition = false;
+                                        else
+                                            flagQuantityCondition = true;
+
+                                        if (flagSymbolCondition && flagExpiryCondition && flagExchCondition &&
+                                            flagStrikeCondition && flagClosePriceCondition &&
+                                            flagLtpCondition && flagQuantityCondition)
+                                        {
+                                            ScannerBox.qfeed.Enqueue(feed);
+                                            
+                                            string key = feed.symbol + feed.expiry + feed.strike + feed.callput + feed.exch;
+                                            string value = feed.feedtime + feed.closePrice + feed.ltp + feed.quantity;
+
+                                            foundKey = true;
+                                            dictFeedDetails[key] = value;
+                                        }
+                                    }
+                                }
+
+                                //check if it needs to be removed from the hashmap and the data table
+                                if (foundKey == false)
+                                {
+                                    var exisiting = ScannerBox.dtFeed.Rows.Find(new Object[] { feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch });
+                                    if (exisiting != null)
+                                    {
+                                        exisiting.Delete();
+                                    }
+                                }
+                                //Console.WriteLine(messageReceived);
                             }
                         }
                         catch (Exception e)

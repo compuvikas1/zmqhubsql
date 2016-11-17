@@ -55,7 +55,7 @@ static char * s_recv(void *socket) {
 //  Convert C string to 0MQ string and send to socket
 int s_send(void *socket, char *string) {
 	int size = zmq_send(socket, string, strlen(string), 0);
-	std::cout << "ZMQ ["<< size <<"]" << std::endl;
+	////std::cout << "ZMQ ["<< size <<"]";
 	return size;
 }
 
@@ -155,14 +155,14 @@ int getLocalTime(long input, std::string &out) {
 }
 
 void getCurrentTime(std::string &currTime) {
-	char time1[24] = { '\0' };
+	char time1[26] = { '\0' };
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	std::chrono::system_clock::duration tp = now.time_since_epoch();
 	tp -= std::chrono::duration_cast<std::chrono::seconds>(tp);
 	time_t tt = std::chrono::system_clock::to_time_t(now);
 	struct tm tm;
 	localtime_s(&tm, &tt);
-	std::snprintf(time1, 24, "[%04u-%02u-%02u %02u:%02u:%02u.%03u]", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
+	std::snprintf(time1, 26, "[%04u-%02u-%02u %02u:%02u:%02u.%04u]", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
 		static_cast<unsigned>(tp / std::chrono::milliseconds(1)));
 	currTime = time1;
 }
@@ -244,8 +244,9 @@ void readConfig(std::string configFile) {
 }
 
 int zmqLog(LOGLEVEL loglevel, std::string comp, std::string data) {
-	std::cout << __LINE__ << " " << logServerStr << " " << loglevel << " : Living : " << comp << " : " << data << std::endl;
+	//std::cout << __LINE__ << " " << logServerStr << " " << loglevel << " : Living : " << comp << " : " << data << std::endl;
 	if (loglevel >= level) {
+		//std::cout << __LINE__ << " " << logServerStr << " " << loglevel << " : Living : " << comp << " : " << data << std::endl;
 		std::string  timestamp; //YYYY-MM-DD HH:MM:SS.xxxx
 		getCurrentTime(timestamp);
 		std::string logStatement = timestamp + " " + std::to_string(loglevel) + " " + component + " : " + data;
@@ -258,6 +259,7 @@ int zmqLog(LOGLEVEL loglevel, std::string comp, std::string data) {
 		return 0;
 	}
 	else {
+		//std::cout << "["<< loglevel << "] ["<<level << "] Do have line but in false!!!" << std::endl;
 		return 1;
 	}
 }
@@ -379,10 +381,16 @@ int main(int argc, char *argv[])
 	} while (pos < lfiles.length() && prev < lfiles.length());
 
 	std::cout << "Vector size : " << tokens.size() << " FS : " << feedSource << std::endl;
+	//std::string ltime1, ltime2;
 	if (feedSource == "SQL") {
 		while (1) {
+			//getCurrentTime(ltime1);
 			fetchFeeds(publisher);
-			Sleep(15000);
+			std::cout << __LINE__ << " DBG:" << std::endl;
+			//getCurrentTime(ltime2);
+			//std::cout << "ltime1 = " << ltime1 << std::endl;
+			//std::cout << "ltime2 = " << ltime2 << std::endl;
+			Sleep(2000);
 		}
 	}
 	else {

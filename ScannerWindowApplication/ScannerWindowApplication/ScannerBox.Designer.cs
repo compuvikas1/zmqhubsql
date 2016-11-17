@@ -32,15 +32,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Expiry = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Strike = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CallPut = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Exch = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ClosePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,16 +49,6 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Time,
-            this.Symbol,
-            this.Expiry,
-            this.Strike,
-            this.CallPut,
-            this.Exch,
-            this.ClosePrice,
-            this.LTP,
-            this.Quantity});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -85,60 +66,6 @@
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Size = new System.Drawing.Size(1048, 309);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // Time
-            // 
-            this.Time.HeaderText = "Time";
-            this.Time.Name = "Time";
-            this.Time.ReadOnly = true;
-            // 
-            // Symbol
-            // 
-            this.Symbol.HeaderText = "Symbol";
-            this.Symbol.Name = "Symbol";
-            this.Symbol.ReadOnly = true;
-            // 
-            // Expiry
-            // 
-            this.Expiry.HeaderText = "Expiry";
-            this.Expiry.Name = "Expiry";
-            this.Expiry.ReadOnly = true;
-            // 
-            // Strike
-            // 
-            this.Strike.HeaderText = "Strike";
-            this.Strike.Name = "Strike";
-            this.Strike.ReadOnly = true;
-            // 
-            // CallPut
-            // 
-            this.CallPut.HeaderText = "P / C";
-            this.CallPut.Name = "CallPut";
-            this.CallPut.ReadOnly = true;
-            // 
-            // Exch
-            // 
-            this.Exch.HeaderText = "Exch";
-            this.Exch.Name = "Exch";
-            this.Exch.ReadOnly = true;
-            // 
-            // ClosePrice
-            // 
-            this.ClosePrice.HeaderText = "ClosePrice";
-            this.ClosePrice.Name = "ClosePrice";
-            this.ClosePrice.ReadOnly = true;
-            // 
-            // LTP
-            // 
-            this.LTP.HeaderText = "LTP";
-            this.LTP.Name = "LTP";
-            this.LTP.ReadOnly = true;
-            // 
-            // Quantity
-            // 
-            this.Quantity.HeaderText = "Quantity";
-            this.Quantity.Name = "Quantity";
-            this.Quantity.ReadOnly = true;
             // 
             // ScannerBox
             // 
@@ -158,14 +85,5 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Time;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Symbol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Expiry;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Strike;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CallPut;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Exch;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ClosePrice;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LTP;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
     }
 }

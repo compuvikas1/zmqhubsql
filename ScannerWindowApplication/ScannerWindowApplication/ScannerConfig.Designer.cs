@@ -113,7 +113,7 @@
             this.cmbExch.Items.AddRange(new object[] {
             "NFO",
             "NOP"});
-            this.cmbExch.Location = new System.Drawing.Point(204, 8);
+            this.cmbExch.Location = new System.Drawing.Point(283, 8);
             this.cmbExch.Name = "cmbExch";
             this.cmbExch.Size = new System.Drawing.Size(65, 21);
             this.cmbExch.TabIndex = 22;
@@ -122,7 +122,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(145, 9);
+            this.label8.Location = new System.Drawing.Point(240, 9);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(31, 13);
             this.label8.TabIndex = 21;
@@ -131,7 +131,7 @@
             // cmbStrike
             // 
             this.cmbStrike.FormattingEnabled = true;
-            this.cmbStrike.Location = new System.Drawing.Point(775, 6);
+            this.cmbStrike.Location = new System.Drawing.Point(850, 6);
             this.cmbStrike.Name = "cmbStrike";
             this.cmbStrike.Size = new System.Drawing.Size(121, 21);
             this.cmbStrike.TabIndex = 20;
@@ -155,7 +155,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(719, 7);
+            this.label6.Location = new System.Drawing.Point(794, 7);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 16;
@@ -164,7 +164,7 @@
             // cmbOptType
             // 
             this.cmbOptType.FormattingEnabled = true;
-            this.cmbOptType.Location = new System.Drawing.Point(627, 4);
+            this.cmbOptType.Location = new System.Drawing.Point(702, 4);
             this.cmbOptType.Name = "cmbOptType";
             this.cmbOptType.Size = new System.Drawing.Size(68, 21);
             this.cmbOptType.TabIndex = 15;
@@ -173,7 +173,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(573, 9);
+            this.label5.Location = new System.Drawing.Point(648, 9);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 14;
@@ -182,7 +182,7 @@
             // cmbExpiry
             // 
             this.cmbExpiry.FormattingEnabled = true;
-            this.cmbExpiry.Location = new System.Drawing.Point(472, 6);
+            this.cmbExpiry.Location = new System.Drawing.Point(547, 6);
             this.cmbExpiry.Name = "cmbExpiry";
             this.cmbExpiry.Size = new System.Drawing.Size(95, 21);
             this.cmbExpiry.TabIndex = 13;
@@ -191,7 +191,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(418, 9);
+            this.label4.Location = new System.Drawing.Point(493, 9);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 13);
             this.label4.TabIndex = 12;
@@ -200,7 +200,7 @@
             // cmbSymbolType
             // 
             this.cmbSymbolType.FormattingEnabled = true;
-            this.cmbSymbolType.Location = new System.Drawing.Point(342, 6);
+            this.cmbSymbolType.Location = new System.Drawing.Point(417, 6);
             this.cmbSymbolType.Name = "cmbSymbolType";
             this.cmbSymbolType.Size = new System.Drawing.Size(68, 21);
             this.cmbSymbolType.TabIndex = 11;
@@ -209,7 +209,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(294, 9);
+            this.label3.Location = new System.Drawing.Point(369, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(36, 13);
             this.label3.TabIndex = 10;
@@ -264,7 +264,7 @@
             this.cmbSymbol.FormattingEnabled = true;
             this.cmbSymbol.Location = new System.Drawing.Point(59, 6);
             this.cmbSymbol.Name = "cmbSymbol";
-            this.cmbSymbol.Size = new System.Drawing.Size(62, 21);
+            this.cmbSymbol.Size = new System.Drawing.Size(157, 21);
             this.cmbSymbol.TabIndex = 4;
             // 
             // chkVolume

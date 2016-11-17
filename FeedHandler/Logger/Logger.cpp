@@ -117,7 +117,7 @@ int writeLog(std::string logString){
 	try {
 		getLogFileTime(logFileTime);
 		logFileName = LogPath + "\\" + logFileTime + "-Logger.log";
-		std::cout << "Log Path : " << logFileName << std::endl;
+		//std::cout << "Log Path : " << logFileName << std::endl;
 
 		result = _stat(logFileName.c_str(), &buf);
 		if (result == 0) {
@@ -129,7 +129,7 @@ int writeLog(std::string logString){
 		logFile.open(logFileName, std::ios::out | std::ios::app | std::ios::binary);
 		logFile << logString;
 		logFile.close();
-		std::cout << "written " << logString.length() << " bytes." << std::endl;
+		//std::cout << "written " << logString.length() << " bytes." << std::endl;
 	}
 	catch (std::system_error e) {
 		std::cerr << "Unable to open " + logFileName + " due to " + e.code().message() << std::endl;
@@ -166,14 +166,21 @@ int main(int argc, char **argv)
 		log_socket.recv(&message);
 		if (bufSize >= 4000) {
 			writeLog(stringbuf);
-			stringbuf = (char *)message.data();
+			char st[4000] = { '\0' };
+			strncpy_s(st, 4000, (char *)message.data(), message.size());
+			stringbuf = stringbuf + "\n" + st;
+			//stringbuf = (char *)message.data();
 			bufSize = stringbuf.length();
 		}
 		else {
-			stringbuf = stringbuf + "\n" +(char *)message.data();
+			int msgSize = 4000;
+			char st[4000] = { '\0' };
+			strncpy_s(st, 4000, (char *)message.data(), message.size());
+			stringbuf = stringbuf + "\n" + st;
+			//stringbuf = stringbuf + "\n" +(char *)message.data();
 			bufSize = stringbuf.length();
-		}		
-		std::cout << "Received : " << (char *)message.data() << std::endl;
-	}
+		}
+		std::cout << "Received : " << message.size() << " Bytes."<< std::endl;
+	}	
 	return 0;
 }

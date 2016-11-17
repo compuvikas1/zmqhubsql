@@ -15,8 +15,8 @@ namespace ScannerWindowApplication
     public partial class ScannerConfig : Form
     {
         ScannerDashboard parentSD;
-        string connectionString = @"Data Source=.\SQLServerr2;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa123";
-        //string connectionString = @"Data Source=HSTBHSVAMDS\SQLEXPRESS;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa@123";
+        //string connectionString = @"Data Source=.\SQLServerr2;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa123";
+        string connectionString = @"Data Source=HSTBHSVAMDS\SQLEXPRESS;Initial Catalog=LPIntraDay;Persist Security Info=True;User ID=sa;Password=sa@123";
         public ScannerConfig(ScannerDashboard sd)
         {
             MySqlHelper.Initialize(connectionString);
@@ -29,14 +29,25 @@ namespace ScannerWindowApplication
         {
             try
             {
-                string fileName = "symbols1.txt";
+                //string fileName = "symbols1.txt";
 
-                var fileLines = File.ReadAllLines(fileName);
-                Array.Sort(fileLines); // alphabetically sorting the symbols
+                //var fileLines = File.ReadAllLines(fileName);
+                //Array.Sort(fileLines); // alphabetically sorting the symbols
 
-                foreach (var singleLine in fileLines)
+                //foreach (var singleLine in fileLines)
+                //{
+                //    cmbSymbol.Items.Add(singleLine);
+                //}
+
+                var query = "select distinct symbol from LPINTRADAY.dbo.vwFeed order by symbol asc";
+                var ohlcdt = MySqlHelper.Instance.GetDataTable(query);
+
+                DataRow curRow;
+
+                for (var i = 0; i < ohlcdt.Rows.Count; i++)
                 {
-                    cmbSymbol.Items.Add(singleLine);
+                    curRow = ohlcdt.Rows[i];
+                    cmbSymbol.Items.Add(curRow[0].ToString().Trim());
                 }
 
                 var filterLines = File.ReadAllLines("filterconfig.txt");
@@ -236,6 +247,8 @@ namespace ScannerWindowApplication
 
             File.Delete("filterconfig.txt");
             parentSD.dictFilters.Clear();
+            ScannerBox.qfeed.Clear();
+            ScannerBox.dtFeed.Clear();
 
             foreach (DataGridViewRow row in filterGridView.Rows)
             {
@@ -262,7 +275,8 @@ namespace ScannerWindowApplication
                 if (applyFlag == true)
                 {
                     SymbolFilter symFilter = new SymbolFilter();
-                    
+
+                    symFilter.symbol = symbol == null ? null : symbol.ToString();
                     symFilter.exch = exch == null ? null : exch.ToString();
                     symFilter.series = series == null ? null : series.ToString();
                     symFilter.expiry = expiry == null ? null : expiry.ToString();
@@ -284,6 +298,7 @@ namespace ScannerWindowApplication
                 //        parentSD.dictFilters.Remove(symbol);
                 //}
             }
+
 
             MessageBox.Show("Filter's Saved");
 
@@ -321,13 +336,15 @@ namespace ScannerWindowApplication
         private void cmbSymbolType_SelectedIndexChanged(object sender, EventArgs e)
         {
             var symbol = cmbSymbol.SelectedItem.ToString();
-            var query = "select distinct CONVERT(VARCHAR(10),ExpiryDate,105) from LPINTRADAY.dbo.vwFeed where symbol = '" + symbol + "' and exch = '" + cmbExch.SelectedItem +"'";
+            var query = "select distinct CONVERT(VARCHAR(10),ExpiryDate,105) expDate from LPINTRADAY.dbo.vwFeed where symbol = '" + symbol + "' and exch = '" + cmbExch.SelectedItem +"'";
             //for NFO no OptType & Strike
             if (cmbExch.SelectedItem.ToString() == "NOP")
             {                
                 if(cmbSymbolType.SelectedItem != null)
                     query = query + " and series = '" + cmbSymbolType.SelectedItem + "'";
             }
+
+            query = query + " order by expDate";
 
             cmbExpiry.Items.Clear();
 
