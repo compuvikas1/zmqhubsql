@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScannerWindowApplication
+namespace ScannerWindowApp
 {
     public class Feed
     {
+        //Symbol, TimeStamp, Expiry, C00186000, Strike, Bidsz, Bprice, askSize, Aprice, volume
+
         public string symbol;
         public string feedtime;
         public string expiry;
@@ -19,7 +21,7 @@ namespace ScannerWindowApplication
         public string askSize;
         public string volume;
 
-        public Feed(string symbol, string feedtime, string expiry, string callput, string strike,
+        public Feed(string symbol, string feedtime, string expiry, string callput, string strike, 
             string bidSize, string bidPrice, string askSize, string askPrice, string volume)
         {
             this.symbol = symbol;
@@ -34,4 +36,5 @@ namespace ScannerWindowApplication
             this.volume = volume;
         }
     }
+
 }

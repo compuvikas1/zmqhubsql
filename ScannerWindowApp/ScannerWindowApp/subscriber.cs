@@ -6,39 +6,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace ScannerWindowApplication
+namespace ScannerDashBoard
 {
-    class Subscriber
+    class subscriber
     {
-        ScannerDashboard parentSD;
-        public Subscriber(ScannerDashboard sd) { parentSD = sd; }
+        private string _topic { get; set; }
+        public subscriber(string topic) { _topic = topic; }
         public void ThreadB()
         {
             try
             {
                 //string topic = args[0] == "All" ? "" : args[0];
                 //string topic = "";
-                //Console.WriteLine("Subscriber started for Topic : {0}", _topic);
+                Console.WriteLine("Subscriber started for Topic : {0}", _topic);
 
                 using (var subSocket = new SubscriberSocket())
                 {
                     subSocket.Options.ReceiveHighWatermark = 1000;
                     subSocket.Connect("tcp://127.0.0.1:5551");
                     //subSocket.SubscribeToAnyTopic();
-                    if (parentSD.dictFilters.Count == 0)
+                    foreach (var val in _topic.Split(','))
                     {
-                        subSocket.SubscribeToAnyTopic();
-                    }
-                    else
-                    {
-                        foreach(var filters in parentSD.dictFilters)
-                        {                            
-                            Console.WriteLine("Subscribing Socket for Symbol : " + filters.Key);
-                            subSocket.Subscribe(filters.Key);
-                        }
+                        Console.WriteLine("Subscribing Socket for : " + val);
+                        subSocket.Subscribe(val);
                     }
 
+                    //subSocket.Subscribe(_topic);
+
+                    //subSocket.Subscribe("ADRA.IDX");
+                    //subSocket.Subscribe("ADRE.IDX");
+                    //subSocket.Subscribe("VGH.IDX");
+                    //subSocket.Subscribe("XFI.IDX");
+                    //subSocket.Subscribe("XIBX.IDX");
+                    //subSocket.Subscribe("XID.IDX");
+                    //subSocket.Subscribe("XII.IDX");
                     Console.WriteLine("Subscriber socket connecting...");
                     while (true)
                     {
@@ -56,7 +57,7 @@ namespace ScannerWindowApplication
                                 Console.WriteLine(messageReceived);
                             }
                         }
-                        catch (Exception e)
+                        catch(Exception e)
                         {
 
                         }
@@ -68,5 +69,6 @@ namespace ScannerWindowApplication
                 NetMQConfig.Cleanup();
             }
         }
+
     }
 }

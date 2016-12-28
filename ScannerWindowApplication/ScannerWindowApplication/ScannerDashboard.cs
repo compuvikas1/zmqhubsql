@@ -13,8 +13,7 @@ namespace ScannerWindowApplication
     public partial class ScannerDashboard : Form
     {
         public string topics { get; set; }
-        //public Dictionary<string, SymbolFilter> dictFilters = new Dictionary<string, SymbolFilter>();
-        public Dictionary<string, List<SymbolFilter>> dictFilters = new Dictionary<string, List<SymbolFilter>>();
+        public Dictionary<string, SymbolFilter> dictFilters = new Dictionary<string, SymbolFilter>();
 
         public ScannerDashboard()
         {

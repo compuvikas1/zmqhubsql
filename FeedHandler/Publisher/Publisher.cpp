@@ -13,23 +13,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream> 
-#include <chrono>
 #include "zmq.hpp"
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #include "Publisher.h"
 #include "JSONValue.h"
-#include "logger.h"
-#include "sqlServerClient.h"
 
 #define srandom srand
 #define random rand
-
-std::string component;
-LOGLEVEL level;
-std::string logServerStr;
-std::string feedSource;
 
 //typedef void(*sig_t)(int);
 
@@ -53,9 +45,8 @@ static char * s_recv(void *socket) {
 }
 
 //  Convert C string to 0MQ string and send to socket
-int s_send(void *socket, char *string) {
+static int s_send(void *socket, char *string) {
 	int size = zmq_send(socket, string, strlen(string), 0);
-	////std::cout << "ZMQ ["<< size <<"]";
 	return size;
 }
 
@@ -135,6 +126,16 @@ void my_handler(int s) {
 	printf("Caught signal %d\n", s);
 }
 
+int readFile(std::string fileName, std::string &out) {
+	std::ifstream inFile;
+	inFile.open(fileName);//open the input file
+
+	std::stringstream oss;
+	oss << inFile.rdbuf();//read the file
+	out = oss.str();
+	return 0;
+}
+
 int OSIParser(std::string input, std::string &symbol, std::string &date, std::string &calllPut , std::string &strike) {
 	symbol = input.substr(0, 6);
 	date = input.substr(7,12);
@@ -153,117 +154,6 @@ int getLocalTime(long input, std::string &out) {
 	out = date;
 	return 0;
 }
-
-void getCurrentTime(std::string &currTime) {
-	char time1[26] = { '\0' };
-	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-	std::chrono::system_clock::duration tp = now.time_since_epoch();
-	tp -= std::chrono::duration_cast<std::chrono::seconds>(tp);
-	time_t tt = std::chrono::system_clock::to_time_t(now);
-	struct tm tm;
-	localtime_s(&tm, &tt);
-	std::snprintf(time1, 26, "[%04u-%02u-%02u %02u:%02u:%02u.%04u]", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
-		static_cast<unsigned>(tp / std::chrono::milliseconds(1)));
-	currTime = time1;
-}
-
-int readFile(std::string fileName, std::string &out) {
-	std::ifstream inFile;
-	try {
-		std::cout << "Going to read " << fileName << std::endl;
-		inFile.open(fileName);//open the input file
-		std::stringstream oss;
-		oss << inFile.rdbuf();//read the file
-		out = oss.str();
-		return 0;
-	}
-	catch (std::system_error e) {
-		std::cerr << "Unable to open " + fileName + " due to " + e.code().message() << std::endl;
-		return -1;
-	}
-}
-
-LOGLEVEL getLogLevel(std::string ll) {
-	if (ll == "INFO") return INFO;
-	if (ll == "ERR") return ERR;
-	if (ll == "WAR") return WAR;
-	if (ll == "DEBUG") return DEBUG;
-	return INFO;
-}
-
-void readConfig(std::string configFile) {
-	size_t prev = 0, pos = 0;
-	std::string confdata;
-	std::string delim("\n");
-	TCHAR pwd[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, pwd);
-	std::cout << "Going to read local config " << configFile << std::endl;
-	if (readFile(configFile, confdata) != 0) {
-		std::cerr << "Unable to read the config. going with default settings" << std::endl;
-		return;
-	}
-	std::cout << "Able to read local config : " << configFile << "with size " << confdata.size() << std::endl;
-	if (confdata.size() < 10) {
-		std::cerr << "Very less bytes in config, So ignoring it" << std::endl;
-		return;
-	}
-	do
-	{
-		pos = confdata.find(delim, prev);
-		if (pos == std::string::npos) pos = confdata.length();
-		std::string token = confdata.substr(prev, pos - prev);
-		if (!token.empty()) {
-			if (token[0] == '#') {
-				prev = pos + delim.length();
-				continue;
-			}
-			size_t p1;
-			if (token.substr(0, 8) == "LOGLEVEL") {
-				p1 = token.find("=", 0); p1++;
-				level = getLogLevel(token.substr(p1, token.length()));
-			}
-			if (token.substr(0, 9) == "LOGSERVER") {
-				p1 = token.find("=", 0); p1++;
-				logServerStr = token.substr(p1, token.length());
-			}
-			if (token.substr(0, 9) == "COMPONENT") {
-				p1 = token.find("=", 0); p1++;
-				component = token.substr(p1, token.length());
-			}
-			if (token.substr(0, 12) == "COMPONENTLOG") {
-				p1 = token.find("=", 0); p1++;
-				component = (LOGLEVEL)std::stoi(token.substr(p1, token.length()));
-			}
-			if (token.substr(0, 10) == "FEEDSOURCE") {
-				p1 = token.find("=", 0); p1++;
-				feedSource = token.substr(p1, token.length());
-			}
-		}
-		prev = pos + delim.length();
-	} while (pos < confdata.length() && prev < confdata.length());
-}
-
-int zmqLog(LOGLEVEL loglevel, std::string comp, std::string data) {
-	//std::cout << __LINE__ << " " << logServerStr << " " << loglevel << " : Living : " << comp << " : " << data << std::endl;
-	if (loglevel >= level) {
-		//std::cout << __LINE__ << " " << logServerStr << " " << loglevel << " : Living : " << comp << " : " << data << std::endl;
-		std::string  timestamp; //YYYY-MM-DD HH:MM:SS.xxxx
-		getCurrentTime(timestamp);
-		std::string logStatement = timestamp + " " + std::to_string(loglevel) + " " + component + " : " + data;
-		zmq::context_t context(1);
-		zmq::socket_t socket(context, ZMQ_PUSH);
-		socket.connect(logServerStr);
-		zmq::message_t request(logStatement.length());
-		memcpy((void *)request.data(), logStatement.c_str(), logStatement.length());
-		socket.send(request);
-		return 0;
-	}
-	else {
-		//std::cout << "["<< loglevel << "] ["<<level << "] Do have line but in false!!!" << std::endl;
-		return 1;
-	}
-}
-
 
 int processSymbol(std::string sym, std::string value, int localcnt, std::string &outString) {
 	//std::cout << "Data for sym [" << sym << "]" << std::endl;
@@ -329,30 +219,20 @@ int processSymbol(std::string sym, std::string value, int localcnt, std::string 
 	return -1;
 }
 
-int main(int argc, char *argv[])
+int main(int argc , char *argv[])
 {
 	signal(SIGINT, my_handler);
 	char errorStr[1000] = { '\0' };
 	int localcnt = 1001;
-	std::string lfilePath = "D:\\zmqhub\\FeedHandler\\resources\\";
+	std::string lfilePath = "C:\\Users\\amodus\\Desktop\\FeedHandler\\";
+	//std::string lfilePath = "D:\\Rahul\\zmqhub\\FeedHandler\\resources\\";
 	std::string lfiles;
-	std::string configFile;
-	if (argc > 3) {
+	if (argc > 2) {
 		lfilePath = argv[1];
 		lfiles = argv[2];
-		configFile = argv[3];
-	}
-	else if (argc > 2) {
-		lfilePath = argv[1];
-		lfiles = argv[2];
-	}
-	else {
+	} else{
 		lfiles = "SPY,GLD,DLD,CET";
 	}
-
-	component = "Feed Publisher";
-	readConfig(configFile);
-
 	void *context = zmq_ctx_new();
 	void *publisher = zmq_socket(context, ZMQ_PUB);
 	int rc = zmq_bind(publisher, "tcp://127.0.0.1:5551");
@@ -380,44 +260,32 @@ int main(int argc, char *argv[])
 		prev = pos + delim.length();
 	} while (pos < lfiles.length() && prev < lfiles.length());
 
-	std::cout << "Vector size : " << tokens.size() << " FS : " << feedSource << std::endl;
-	//std::string ltime1, ltime2;
-	if (feedSource == "SQL") {
-		while (1) {
-			//getCurrentTime(ltime1);
-			fetchFeeds(publisher);
-			std::cout << __LINE__ << " DBG:" << std::endl;
-			//getCurrentTime(ltime2);
-			//std::cout << "ltime1 = " << ltime1 << std::endl;
-			//std::cout << "ltime2 = " << ltime2 << std::endl;
-			Sleep(2000);
+	std::cout <<"Vector size : "<< tokens.size() << std::endl;
+
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
+		std::string lfileName = lfilePath+"\\"+*it+".json";
+		std::cout << "Read the file [" << lfileName << "]" << std::endl;
+		ierror = readFile(lfileName, value);
+		if (ierror != 0) {			
+			std::cout << "Unable to read the file [" << lfileName << "]" << std::endl;
+			continue;
+		}
+		else {
+			contents.push_back(value);
 		}
 	}
-	else {
-		for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
-			std::string lfileName = lfilePath + "\\" + *it + ".json";
-			std::cout << "Read the file [" << lfileName << "]" << std::endl;
-			ierror = readFile(lfileName, value);
-			if (ierror != 0) {
-				std::cerr << "Unable to read the file [" << lfileName << "]" << std::endl;
-				zmqLog(ERR, component, "Unable to read the file [" + lfileName + "]");
-				continue;
-			}
-			else {
-				contents.push_back(value);
-			}
-		}	
-		while (1) {
-			std::string outString;
-			int i = 0;
-			for (std::vector<std::string>::iterator it = contents.begin(); it != contents.end(); ++it) {
-				std::cout << "Processing [" << tokens.at(i) << "]" << std::endl;
-				processSymbol(tokens.at(i++), *it, localcnt++, outString);
-				s_send(publisher, (char *)outString.c_str());
-				zmqLog(DEBUG, component, outString);
-			}
-			Sleep(5000);
+
+	//std::cout << "Vector size : " << contents.size() << std::endl;
+
+	while(1) {
+		std::string outString;
+		int i = 0;
+		for (std::vector<std::string>::iterator it = contents.begin(); it != contents.end(); ++it) {
+			std::cout << "Processing [" << tokens.at(i) << "]" << std::endl;
+			processSymbol(tokens.at(i++),*it, localcnt++, outString);
+			s_send(publisher, (char *)outString.c_str());
 		}
+		Sleep(5000);
 	}
 	zmq_close(publisher);
 	zmq_ctx_destroy(context);

@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
-using System.Globalization;
 
 namespace ScannerWindowApplication
 {
@@ -20,30 +19,9 @@ namespace ScannerWindowApplication
         private Thread myThread;
         public static Boolean openedMainForm = true;
         ScannerDashboard parentSD;
-
-        public static DataTable dtFeed = new DataTable();        
-
         public ScannerBox(ScannerDashboard sd)
         {
             InitializeComponent();
-            if (dtFeed.Columns.Contains("Time") == false)
-            {
-                var colTime = dtFeed.Columns.Add("Time");
-                var colSymbol = dtFeed.Columns.Add("Symbol");
-                var colExpiry = dtFeed.Columns.Add("Expiry");
-                var colStrike = dtFeed.Columns.Add("Strike");
-                var colPC = dtFeed.Columns.Add("PC");
-                var colExch = dtFeed.Columns.Add("Exch");
-                var colClosePrice = dtFeed.Columns.Add("ClosePrice");
-                var colLTP = dtFeed.Columns.Add("LTP");
-                var colQuantity = dtFeed.Columns.Add("Quantity");
-
-                // set primary key constain so we can search for specific rows
-                dtFeed.PrimaryKey = new[] { colSymbol, colExpiry, colStrike, colPC, colExch };
-            }
-
-            dataGridView1.DataSource = dtFeed;
-
             parentSD = sd;            
             ScannerBox.openedMainForm = true;
             myDelegate = new AddListItem(AddListItemMethod);
@@ -64,50 +42,85 @@ namespace ScannerWindowApplication
             if (ScannerBox.qfeed.Count > 0)
             {
                 Feed feed = ScannerBox.qfeed.Dequeue();
+                int rowIndex = 0;
+                Boolean foundRow = false;
 
-                var exisiting = dtFeed.Rows.Find(new Object[] { feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch });
-                if (exisiting != null)
-                    exisiting.ItemArray = new object[] { feed.feedtime, feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch, feed.closePrice, feed.ltp, feed.quantity };                
-                else
-                    dtFeed.Rows.Add(new Object[] { feed.feedtime, feed.symbol, feed.expiry, feed.strike, feed.callput, feed.exch, feed.closePrice, feed.ltp, feed.quantity });
+                //place condition for feedPrice
+                double spreadPrice = Convert.ToDouble(feed.askPrice) - Convert.ToDouble(feed.bidPrice);
+                int volume = Convert.ToInt32(feed.volume);
+                double bidsize = Convert.ToDouble(feed.bidSize);
+                double asksize = Convert.ToDouble(feed.askSize);                
 
-                //int rowIndex = 0;
-                //Boolean foundRow = false;
+                bool flagSpreadPriceCondition = true;
+                bool flagVolumeCondition = true;
+                bool flagBidSizeCondition = true;
+                bool flagAskSizeCondition = true;
 
-                ////place condition for feedPrice                
-                
-                //foreach (DataGridViewRow dgvRow in dataGridView1.Rows)
-                //{
-                //    if (string.Compare(dgvRow.Cells[1].FormattedValue.ToString(),feed.symbol)== 0 &&
-                //        string.Compare(dgvRow.Cells[2].Value.ToString(),feed.expiry.Substring(0,10))== 0 &&
-                //        string.Compare(dgvRow.Cells[3].Value.ToString(),feed.strike) == 0 &&
-                //        string.Compare(dgvRow.Cells[4].Value.ToString(),feed.callput)==0)
-                //    {
-                //        dgvRow.Cells[0].Value = feed.feedtime.Substring(11, 9);
-                //        dgvRow.Cells[2].Value = feed.expiry.Substring(0,10);
-                //        dgvRow.Cells[3].Value = feed.strike;
-                //        dgvRow.Cells[4].Value = feed.callput;
-                //        dgvRow.Cells[5].Value = feed.exch;
-                //        dgvRow.Cells[6].Value = round(feed.closePrice, 2);
-                //        dgvRow.Cells[7].Value = round(feed.ltp, 2);
-                //        dgvRow.Cells[8].Value = feed.quantity;                            
+                SymbolFilter symbolfilter;
+                if (parentSD.dictFilters.TryGetValue(feed.symbol.Trim(), out symbolfilter))
+                {                
+                    if (symbolfilter.spreadPrice != 0 && spreadPrice < symbolfilter.spreadPrice)
+                    {
+                        flagSpreadPriceCondition = false;
+                    }
+                    if (symbolfilter.volume != 0 && volume < symbolfilter.volume)
+                    {
+                        flagVolumeCondition = false;
+                    }
+                    if (symbolfilter.bidSize != 0 && bidsize < symbolfilter.bidSize)
+                    {
+                        flagBidSizeCondition = false;
+                    }
+                    if (symbolfilter.askSize != 0 && asksize < symbolfilter.askSize)
+                    {
+                        flagAskSizeCondition = false;
+                    }
+                }
+
+                foreach (DataGridViewRow dgvRow in dataGridView1.Rows)
+                {
+                    if (dgvRow.Cells[0].FormattedValue.ToString() == feed.symbol &&
+                        dgvRow.Cells[2].Value.ToString() == feed.expiry &&
+                        dgvRow.Cells[3].Value.ToString().Substring(0,1) == feed.callput.Trim().Substring(0,1) &&
+                    dgvRow.Cells[4].Value.ToString() == round(feed.strike, 2).ToString())
+                    {
+                        if (flagSpreadPriceCondition && flagVolumeCondition 
+                            && flagBidSizeCondition && flagAskSizeCondition)
+                        {
+                            dgvRow.Cells[1].Value = feed.feedtime.Substring(11, 8);
+                            dgvRow.Cells[2].Value = feed.expiry;
+                            string callput = "PUT";
+                            if (feed.callput.Trim().Substring(0, 1) == "C")
+                                callput = "CALL";
+                            dgvRow.Cells[3].Value = callput;
+                            dgvRow.Cells[4].Value = round(feed.strike, 2);
+                            dgvRow.Cells[5].Value = round(feed.bidSize, 2);
+                            dgvRow.Cells[6].Value = round(feed.bidPrice, 2);
+                            dgvRow.Cells[7].Value = round(feed.askPrice, 2);
+                            dgvRow.Cells[8].Value = round(feed.askSize, 2);
+                            dgvRow.Cells[9].Value = feed.volume;
+                        }
                         
-                //        //Console.WriteLine("Existed Row is updated");
-                //        foundRow = true;
-                //        break;
-                //    }
-                //    rowIndex++;
-                //}
-                //if (foundRow == false)
-                //{
-                //    {
-                //        //Console.WriteLine("new Row Added");                        
-                //        dataGridView1.Rows.Insert(0, feed.feedtime.Substring(11, 9), feed.symbol, feed.expiry.Substring(0,10),
-                //            feed.strike, feed.callput, feed.exch, 
-                //             round(feed.closePrice, 2), round(feed.ltp, 2), feed.quantity);
-                //    }
-                //}
-                //dataGridView1.Update();
+                        foundRow = true;
+                        break;
+                    }
+                    rowIndex++;
+                }
+                if (foundRow == false)
+                {
+                    if (flagSpreadPriceCondition && flagVolumeCondition
+                        && flagBidSizeCondition && flagAskSizeCondition)
+                    {
+                        string callput = "PUT";
+                        if (feed.callput.Trim().Substring(0, 1) == "C")
+                            callput = "CALL";
+
+                        dataGridView1.Rows.Insert(0, feed.symbol, feed.feedtime.Substring(11, 8), feed.expiry,
+                            callput,
+                            round(feed.strike, 2), round(feed.bidSize, 2), round(feed.bidPrice, 2), round(feed.askPrice, 2), round(feed.askSize, 2), feed.volume);
+                    }
+                }
+                dataGridView1.Update();
             }
         }
 
